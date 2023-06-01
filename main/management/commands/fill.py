@@ -12,12 +12,17 @@ class Command(BaseCommand):
             {'name': 'fish', 'price': 700, 'category': 'seafood'},
         ]
 
-        old_products = []
-        product_for_create = []
-        for product in product_list:
-            # if product['name'] !=
-            product_for_create.append(
-                Product(**product)
-            )
 
-        Product.objects.bulk_create(product_for_create)
+        product_for_create = []
+
+
+
+
+        for product in product_list:
+            if product['name'] not in old_products:
+                product_for_create.append(
+                    Product(**product)
+                )
+            # elif product['name'] in old_products:
+
+        Product.objects.update_or_create(product_for_create)
