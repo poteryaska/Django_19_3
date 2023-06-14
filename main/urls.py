@@ -6,5 +6,6 @@ from .views import *
 app_name = MainConfig.name
 
 urlpatterns = [
-    path('', home, name='home')
+    path('', home, name='home'),
+    path('product/', product, name='product')
 ]
