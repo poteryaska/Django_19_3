@@ -1,10 +1,15 @@
 from django.db import models
 
+NULLABLE = {'blank': True, "null": True}
+
+
+
+
 class Product(models.Model):
     name = models.CharField(max_length=200, verbose_name='наименование товара')
     description = models.TextField(blank=True)
-    photo = models.ImageField(upload_to='photos/%Y/%m/%d')
-    category = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d', **NULLABLE)
+    category = models.ForeignKey('Category', on_delete=models.PROTECT)
     price = models.IntegerField()
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
