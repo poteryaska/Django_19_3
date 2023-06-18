@@ -7,10 +7,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         product_list = [
-            {'name': 'apple', 'price': 130, 'category': 'fruits'},
-            {'name': 'cucumber', 'price': 120, 'category': 'vegetables'},
-            {'name': 'chicken', 'price': 100, 'category': 'meat'},
-            {'name': 'mussels', 'price': 700, 'category': 'seafood'},
+            {'name': 'apple', 'price': 130, 'category_id': 6},
+            {'name': 'cucumber', 'price': 120, 'category_id': 5},
+            {'name': 'chicken', 'price': 100, 'category_id': 7},
+            {'name': 'mussels', 'price': 700, 'category_id': 8},
         ]
 
         product_for_create = []

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+
+{% block content %}
+    <div class="card-body">
+            <p class="card-text">{{ item.name|title }}</p>
+            <li>цена: {{item.price}}</li><p>
+            <li>Описание: {{item.description}}</li><p>
+    <img class="card-img-top"
+         src="{{ item.photo|mediapath }}"
+         alt="Card image cap">
+{% endblock %}

@@ -1,3 +1,4 @@
+import products as products
 from django.urls import path
 
 from .apps import MainConfig
@@ -7,5 +8,6 @@ app_name = MainConfig.name
 
 urlpatterns = [
     path('', home, name='home'),
-    path('product/', product, name='product')
+    path('products/', products, name='products'),
+    path('<int:pk>/item/', item, name='item')
 ]

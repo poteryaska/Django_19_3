@@ -15,7 +15,7 @@ class Product(models.Model):
     time_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.name} {self.price}'
+        return f'{self.name}\n(цена за кг: {self.price})\n{self.description}\n{self.photo}'
 
     class Meta:
         verbose_name = 'товар'  # Настройка для наименования одного объекта
