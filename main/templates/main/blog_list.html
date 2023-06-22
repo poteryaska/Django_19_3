@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+     <a href="{% url 'main:blog_create' %}" type="button" class="btn btn-sm btn-outline-secondary">Создать</a>
     <div class="row">
         {% for object in object_list %}
             {% load my_tags %}

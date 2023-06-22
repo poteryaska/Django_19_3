@@ -1,5 +1,6 @@
 
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 from django.views import generic
 
 from main.models import Product, Category, Blog
@@ -38,3 +39,8 @@ class BlogListView(generic.ListView):
 
 class BlogDetailView(generic.DetailView):
     model = Blog
+
+class BlogCreateView(generic.CreateView):
+    model = Blog
+    fields = ('name', 'description', "is_published", "photo",)
+    success_url = reverse_lazy('main:blog_list')
