@@ -1,0 +1,25 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="row">
+        {% for object in object_list %}
+            {% load my_tags %}
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <img class="card-img-top"
+                        src="{{ object.photo|mediapath }}"
+                        alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text">{{ object.name|title }}</p>
+                        <li>Описание: {{object.description | slice:100 }}</li><p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a href="{% url 'main:blog_detail' object.slug %}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

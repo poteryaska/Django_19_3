@@ -1,28 +1,40 @@
-from django.shortcuts import render, get_object_or_404
 
-from main.models import Product, Category
+from django.shortcuts import render, get_object_or_404
+from django.views import generic
+
+from main.models import Product, Category, Blog
 
 
 def home(request):
     context = {
-        'object_list': Product.objects.all(),
         'title': 'Продукты для души и тела'
     }
-    return render(request, 'home.html', context)
+    return render(request, 'main/home.html', context)
 
-def products(request):
-    context = {
-        'object_list': Product.objects.all(),
+class ProductListView(generic.ListView):
+    model = Product
+    extra_context = {
         'title': 'Наши продукты'
     }
-    return render(request, 'products.html', context)
 
-
-def item(request, pk):
-    item = get_object_or_404(Product, pk=pk)
-    context = {
-        # 'object_list': Product.objects.filter(id=pk),
-        'item': item,
-        'cat_selected': item.category_id
+class CategoryListView(generic.ListView):
+    model = Category
+    extra_context = {
+        'title': 'Категории продуктов'
     }
-    return render(request, 'item.html', context)
+class ItemDetailView(generic.DetailView):
+    model = Product
+
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data(**kwargs)
+    #     context_data['title'] = context_data['object']
+    #     return context_data
+
+class BlogListView(generic.ListView):
+    model = Blog
+    extra_context = {
+        'title': 'Пишем о еде'
+    }
+
+class BlogDetailView(generic.DetailView):
+    model = Blog
