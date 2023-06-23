@@ -3,9 +3,12 @@
 
 {% block content %}
 
-<h1>{{ object.name|title }}</h1>
-<li>Описание: {{object.description}}</li><p>
-<img class="card-img-top"
-src="{{ object.photo|mediapath }}"
-alt="Card image cap">
+    <h1>{{ object.name|title }}</h1>
+    <li>Описание: {{object.description}}</li><p>
+    <img class="card-img-top"
+    src="{{ object.photo|mediapath }}"
+    alt="Card image cap">
+    <div class="card-footer">
+        Просмотры: {{object.count_view}}
+    </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load my_tags %}
 
 {% block content %}
      <a href="{% url 'main:blog_create' %}" type="button" class="btn btn-sm btn-outline-secondary">Создать</a>
@@ -15,7 +16,9 @@
                         <li>Описание: {{object.description | slice:100 }}</li><p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <a href="{% url 'main:blog_detail' object.slug %}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                                <a href="{% url 'main:blog_detail' object.slug %}" class="w-100 btn btn-lg btn-outline-primary">Подробнее</a>
+                                 <p><a href="{% url 'main:blog_update' object.slug %}" class="w-100 btn btn-lg btn-outline-primary">Update</a></p>
+                                    <a href="{% url 'main:blog_delete' object.slug %}" class="w-100 btn btn-lg btn-outline-primary">Delete</a>
                             </div>
                         </div>
                     </div>

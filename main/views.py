@@ -1,7 +1,8 @@
-
+from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
+from django.conf import settings
 
 from main.models import Product, Category, Blog
 
@@ -37,10 +38,38 @@ class BlogListView(generic.ListView):
         'title': 'Пишем о еде'
     }
 
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(is_published=True)
+        return queryset
+
 class BlogDetailView(generic.DetailView):
     model = Blog
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.count_view += 1
+        self.object.save()
+        if self.object.count_view == 10:
+            send_mail(
+                "Поздравляем",
+                "Количество просмотров:",
+                settings.EMAIL_HOST_USER,
+                ["jane87.05@mail.ru"],
+            )
+
+        return self.object
 
 class BlogCreateView(generic.CreateView):
     model = Blog
     fields = ('name', 'description', "is_published", "photo",)
+    success_url = reverse_lazy('main:blog_list')
+
+class BlogUpdateView(generic.UpdateView):
+    model = Blog
+    fields = ('name', 'description', "is_published", "photo",)
+
+    def get_success_url(self):
+        return reverse('main:blog_detail', args=[self.kwargs.get('slug')])
+class BlogDeleteView(generic.DeleteView):
+    model = Blog
     success_url = reverse_lazy('main:blog_list')
