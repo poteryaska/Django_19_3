@@ -6,12 +6,11 @@ from django.conf import settings
 
 from main.models import Product, Category, Blog
 
-
-def home(request):
-    context = {
+class HomeView(generic.TemplateView):
+    template_name = 'main/home.html'
+    extra_context = {
         'title': 'Продукты для души и тела'
     }
-    return render(request, 'main/home.html', context)
 
 class ProductListView(generic.ListView):
     model = Product
@@ -52,7 +51,7 @@ class BlogDetailView(generic.DetailView):
         if self.object.count_view == 10:
             send_mail(
                 "Поздравляем",
-                "Количество просмотров:",
+                f"Количество просмотров:{self.object.count_view}",
                 settings.EMAIL_HOST_USER,
                 ["jane87.05@mail.ru"],
             )

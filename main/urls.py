@@ -7,7 +7,7 @@ from .views import *
 app_name = MainConfig.name
 
 urlpatterns = [
-    path('', home, name='home'),
+    path('', HomeView.as_view(), name='home'),
     path('products/', ProductListView.as_view(), name='product_list'),
     path('category/', CategoryListView.as_view(), name='category_list'),
     path('<int:pk>/item/', ItemDetailView.as_view(), name='product_detail'),
