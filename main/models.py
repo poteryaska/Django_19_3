@@ -36,6 +36,11 @@ class Product(models.Model):
         verbose_name_plural = 'товары'  # Настройка для наименования набора объектов
         ordering = ('name',)
 
+    # выбор последней версии продукта
+    @property
+    def active_version(self):
+        return self.version_set.last()
+
 class Category(models.Model):
     name = models.CharField(max_length=200, verbose_name='наименование категории')
     description = models.TextField(blank=True)
@@ -70,3 +75,16 @@ class Blog(models.Model):
         verbose_name = 'Блог'  # Настройка для наименования одного объекта
         verbose_name_plural = 'Блоги'  # Настройка для наименования набора объектов
         ordering = ('name', 'time_create')
+
+class Version(models.Model):
+    product = models.ForeignKey("Product", on_delete=models.CASCADE)
+    number_version = models.IntegerField()
+    name_version = models.CharField(max_length=100, verbose_name="Название версии")
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Версия"
+        verbose_name_plural = "Версии"
+
+    def __str__(self):
+        return f"{self.name_version} | Номер версии: {self.number_version}"

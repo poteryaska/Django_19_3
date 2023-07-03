@@ -2,8 +2,13 @@
 
 {% block content %}
     <div class="row">
-        {% for object in object_list %}
-            {% include 'main/includes/inc_product.html' %}
-        {% endfor %}
+        <div class="col-12 mb-5">
+            <a class="btn btn-primary" href="{% url 'main:product_create' %}">Добавить товар</a>
+        </div>
+            {% for object in object_list %}
+                {% if object.active_version %}
+                    {% include 'main/includes/inc_product.html' %}
+                {% endif %}
+            {% endfor %}
     </div>
 {% endblock %}
