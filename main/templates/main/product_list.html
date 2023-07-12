@@ -6,9 +6,7 @@
             <a class="btn btn-primary" href="{% url 'main:product_create' %}">Добавить товар</a>
         </div>
             {% for object in object_list %}
-                {% if object.active_version %}
-                    {% include 'main/includes/inc_product.html' %}
-                {% endif %}
+                {% include 'main/includes/inc_product.html' %}
             {% endfor %}
     </div>
 {% endblock %}

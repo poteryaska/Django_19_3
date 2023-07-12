@@ -29,10 +29,16 @@ class ProductListView(generic.ListView):
     }
 class ItemDetailView(generic.DetailView):
     model = Product
-    # def get_context_data(self, **kwargs):
-    #     context_data = super().get_context_data(**kwargs)
-    #     context_data['title'] = context_data['object']
-    #     return context_data
+    def get_object(self, **kwargs):
+        obj = super().get_object()
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product_version = self.get_object()
+
+        context["product_version"] = product_version.active_version
+        return context
 
 class ProductCreateView(CreateView):
     model = Product
