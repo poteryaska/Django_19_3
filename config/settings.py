@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from telnetlib import LOGOUT
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +140,8 @@ EMAIL_HOST_USER = 'lemanove@gmail.com'
 EMAIL_HOST_PASSWORD = 'stkyhzryiwzvfvpj'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+
+AUTH_USER_MODEL = 'users.User'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
