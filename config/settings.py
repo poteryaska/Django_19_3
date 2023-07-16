@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'users',
 ]
 
+SITE_NAME = "127.0.0.1:8000"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
