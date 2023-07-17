@@ -1,6 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify as d_slugify
-
+from config import settings
 
 
 def slugify(words: str) -> str:
@@ -27,6 +27,7 @@ class Product(models.Model):
     price = models.IntegerField()
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE)
 
     def __str__(self):
         return f'{self.name}\n(цена за кг: {self.price})\n{self.description}\n{self.photo}'

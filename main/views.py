@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views import generic
@@ -27,11 +28,15 @@ class ProductListView(generic.ListView):
     extra_context = {
         'title': 'Наши продукты'
     }
+
+
 class ItemDetailView(generic.DetailView):
     model = Product
-    def get_object(self, **kwargs):
-        obj = super().get_object()
-        return obj
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404("You are not owner of this product!")
+        return self.object
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -44,6 +49,16 @@ class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('main:product_list')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        if self.request.user is None:
+            raise Http404("You can't create a new product!")
+
+        return super().form_valid(form)
+
 
 class ProductUpdateView(UpdateView):
     model = Product
@@ -76,9 +91,21 @@ class ProductUpdateView(UpdateView):
 
         return super().form_valid(form)
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404("You are not owner of this product!")
+        return self.object
+
 class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy('main:product_list')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404("You are not owner of this product!")
+        return self.object
 
 class BlogListView(generic.ListView):
     model = Blog
