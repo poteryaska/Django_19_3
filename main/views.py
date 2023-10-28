@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.http import Http404
@@ -18,21 +18,22 @@ class HomeView(generic.TemplateView):
         'title': 'Продукты для души и тела'
     }
 
-class CategoryListView(generic.ListView):
+class CategoryListView(LoginRequiredMixin, generic.ListView):
     model = Category
     extra_context = {
         'title': 'Категории продуктов'
     }
 
-class ProductListView(generic.ListView):
+class ProductListView(LoginRequiredMixin, generic.ListView):
     model = Product
     extra_context = {
         'title': 'Наши продукты'
     }
 
 
-class ItemDetailView(generic.DetailView):
+class ItemDetailView(LoginRequiredMixin, generic.DetailView):
     model = Product
+    permission_required = 'main.view_product'
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         if self.object.owner != self.request.user:
@@ -46,7 +47,7 @@ class ItemDetailView(generic.DetailView):
         context["product_version"] = product_version.active_version
         return context
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('main:product_list')
@@ -61,11 +62,12 @@ class ProductCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(PermissionRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('main:product_list')
-    permission_required = "main.view_product"
+    permission_required = "main.change_product"
+
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -99,7 +101,12 @@ class ProductUpdateView(PermissionRequiredMixin, UpdateView):
             raise Http404("You are not owner of this product!")
         return self.object
 
-class ProductDeleteView(DeleteView):
+    def get_form_class(self):
+        # if self.request.user
+        return self.form_class
+
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('main:product_list')
 

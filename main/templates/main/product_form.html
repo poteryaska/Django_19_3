@@ -13,26 +13,7 @@
             </div>
             <div class="card-body">
                 {% csrf_token %}
-                <!--{{ form.as_p}}-->
-                {% if perms.main.change_product %}
-                {{ form.name }}
-                {% else %}
-                {{ form.name.as_hidden }}
-                {% endif%}
-                <!--                <p> {% if perms.main.change_product %}-->
-                <!--                    {{ form.price }}-->
-                <!--                    {% else %}-->
-                <!--                    {{ form.price.as_hidden }}-->
-                <!--                    {% endif%} </p>-->
-                <p> {{ form.category }} </p>
-                <p> {{ form.description }} </p>
-                <!--                {% if perms.main.change_product %}-->
-                <!--                {{ form.photo }}-->
-                <!--                {% else %}-->
-                <!--                {{ form.photo.as_hidden }}-->
-                <!--                {% endif%}-->
-                <!--                <p> {{ form.is_published }} </p>-->
-
+                {{ form.as_p}}
                 <button type="submit" class="btn btn-outline-success">
                     {% if object %}
                     Сохранить
