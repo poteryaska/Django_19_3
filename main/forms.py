@@ -28,7 +28,7 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 
     class Meta:
         model = Product
-        exclude = ('owner',)
+        fields = ["name", "price", "category", "description", "photo", "is_published"]
 
 
 class VersionForm(StyleFormMixin, forms.ModelForm):

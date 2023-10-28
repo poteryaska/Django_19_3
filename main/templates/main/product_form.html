@@ -1,44 +1,64 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <form method="post" class="row" enctype="multipart/form-data">
-        <div class="row col-12">
-            <div class="col-6">
-                <div class="card-header">
+<form method="POST" class="row" enctype="multipart/form-data">
+    <div class="row col-12">
+        <div class="col-6">
+            <div class="card-header">
+                {% if object %}
+                Редактирование товара
+                {% else %}
+                Добавление товара
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <!--{{ form.as_p}}-->
+                {% if perms.main.change_product %}
+                {{ form.name }}
+                {% else %}
+                {{ form.name.as_hidden }}
+                {% endif%}
+                <!--                <p> {% if perms.main.change_product %}-->
+                <!--                    {{ form.price }}-->
+                <!--                    {% else %}-->
+                <!--                    {{ form.price.as_hidden }}-->
+                <!--                    {% endif%} </p>-->
+                <p> {{ form.category }} </p>
+                <p> {{ form.description }} </p>
+                <!--                {% if perms.main.change_product %}-->
+                <!--                {{ form.photo }}-->
+                <!--                {% else %}-->
+                <!--                {{ form.photo.as_hidden }}-->
+                <!--                {% endif%}-->
+                <!--                <p> {{ form.is_published }} </p>-->
+
+                <button type="submit" class="btn btn-outline-success">
                     {% if object %}
-                        Редактирование товара
+                    Сохранить
                     {% else %}
-                        Добавление товара
+                    Добавить
                     {% endif %}
+                </button>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    Версия
                 </div>
                 <div class="card-body">
-                    {% csrf_token %}
+                    {{ formset.management_form}}
+                    {% for form in formset.forms %}
                     {{ form.as_p}}
-                    <button type="submit" class="btn btn-outline-success">
-                        {% if object %}
-                        Сохранить
-                        {% else %}
-                        Добавить
-                        {% endif %}
-                    </button>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        Версия
-                    </div>
-                    <div class="card-body">
-                        {{ formset.management_form}}
-                        {% for form in formset.forms %}
-                            {{ form.as_p}}
-                            {% if forloop.revcounter0 != 0 %}
-                                <hr>
-                            {% endif%}
-                        {% endfor %}
-                    </div>
+                    {% if forloop.revcounter0 != 0 %}
+                    <hr>
+                    {% endif%}
+                    {% endfor %}
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+
+</form>
 {% endblock %}

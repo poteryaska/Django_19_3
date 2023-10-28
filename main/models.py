@@ -28,7 +28,7 @@ class Product(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE)
-
+    is_published = models.BooleanField(default=False)
     def __str__(self):
         return f'{self.name}\n(цена за кг: {self.price})\n{self.description}\n{self.photo}'
 
@@ -36,6 +36,8 @@ class Product(models.Model):
         verbose_name = 'товар'  # Настройка для наименования одного объекта
         verbose_name_plural = 'товары'  # Настройка для наименования набора объектов
         ordering = ('name',)
+        permissions = [('set_publish_status', 'Can publish')]
+
 
     # выбор последней версии продукта
     @property
