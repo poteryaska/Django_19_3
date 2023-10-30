@@ -66,8 +66,30 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('main:product_list')
-    permission_required = "main.change_product"
+    permission_required = (
+        'main.change_description',
+        'main.change_category',
+    )
 
+    def has_permission(self):
+        perms = self.get_permission_required()
+        product = self.get_object()
+        return self.request.user == product.owner or self.request.user.has_perms(perms)
+
+    def get_form(self):
+        form = super().get_form()
+        if self.request.user != form.instance.owner:
+            enabled_fields = set()
+            if self.request.user.has_perm('main.change_category'):
+                enabled_fields.add('category')
+            if self.request.user.has_perm('main.change_description'):
+                enabled_fields.add('description')
+
+            for field_name in enabled_fields.symmetric_difference(form.fields):
+                form.fields[field_name].disabled = True
+                form.errors.pop(field_name, None)
+
+        return form
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -101,9 +123,9 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             raise Http404("You are not owner of this product!")
         return self.object
 
-    def get_form_class(self):
-        # if self.request.user
-        return self.form_class
+    # def get_form_class(self):
+    #     if self.request.user in self.user.groups.filter(name='модератор').exists()
+    #     return self.form_class
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
