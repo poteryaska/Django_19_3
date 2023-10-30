@@ -36,7 +36,10 @@ class Product(models.Model):
         verbose_name = 'товар'  # Настройка для наименования одного объекта
         verbose_name_plural = 'товары'  # Настройка для наименования набора объектов
         ordering = ('name',)
-        permissions = [('set_publish_status', 'Can publish')]
+        permissions = [('publish_status', 'Can publish'),
+                       ('change_description', 'change description'),
+                       ('change_category', 'change category')
+                       ]
 
 
     # выбор последней версии продукта

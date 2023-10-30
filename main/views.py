@@ -1,8 +1,10 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.conf import settings
@@ -67,27 +69,28 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     form_class = ProductForm
     success_url = reverse_lazy('main:product_list')
     permission_required = (
+        'publish_status',
         'main.change_description',
         'main.change_category',
     )
 
     def has_permission(self):
         perms = self.get_permission_required()
-        product = self.get_object()
+        product: Product = self.get_object()
         return self.request.user == product.owner or self.request.user.has_perms(perms)
 
-    def get_form(self):
+    def get_form(self, **kwargs):
         form = super().get_form()
-        if self.request.user != form.instance.owner:
-            enabled_fields = set()
-            if self.request.user.has_perm('main.change_category'):
-                enabled_fields.add('category')
-            if self.request.user.has_perm('main.change_description'):
-                enabled_fields.add('description')
+        # if self.request.user != form.instance.owner:
+        enabled_fields = set()
+        if self.request.user.has_perm('main.change_category'):
+            enabled_fields.add('category')
+        if self.request.user.has_perm('main.change_description'):
+            enabled_fields.add('description')
 
-            for field_name in enabled_fields.symmetric_difference(form.fields):
-                form.fields[field_name].disabled = True
-                form.errors.pop(field_name, None)
+        for field_name in enabled_fields.symmetric_difference(form.fields):
+            form.fields[field_name].disabled = True
+            form.errors.pop(field_name, None)
 
         return form
 
@@ -127,7 +130,13 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     #     if self.request.user in self.user.groups.filter(name='модератор').exists()
     #     return self.form_class
 
-
+@permission_required('main.publish_status')
+def publish_status(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    product.is_published = False
+    product.save()
+    messages.info(request, 'Публикация отменена')
+    return redirect('main:home')
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('main:product_list')
