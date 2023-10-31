@@ -83,7 +83,7 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 
     def get_form(self, **kwargs):
         form = super().get_form()
-        # if self.request.user != form.instance.owner:
+
         enabled_fields = set()
         if self.request.user.has_perm('main.change_category'):
             enabled_fields.add('category')
