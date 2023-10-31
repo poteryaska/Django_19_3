@@ -6,9 +6,10 @@ from django.forms import inlineformset_factory
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.views import generic
+from django.views import generic, View
 from django.conf import settings
 from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
 
 from main.forms import ProductForm, VersionForm
 from main.models import Product, Category, Blog, Version
@@ -69,10 +70,11 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     form_class = ProductForm
     success_url = reverse_lazy('main:product_list')
     permission_required = (
-        'publish_status',
+        'main.publish_status',
         'main.change_description',
         'main.change_category',
     )
+
 
     def has_permission(self):
         perms = self.get_permission_required()
@@ -87,7 +89,8 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             enabled_fields.add('category')
         if self.request.user.has_perm('main.change_description'):
             enabled_fields.add('description')
-
+        if self.request.user.has_perm('main.publish_status'):
+            enabled_fields.add('is_published')
         for field_name in enabled_fields.symmetric_difference(form.fields):
             form.fields[field_name].disabled = True
             form.errors.pop(field_name, None)
@@ -126,17 +129,6 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             raise Http404("You are not owner of this product!")
         return self.object
 
-    # def get_form_class(self):
-    #     if self.request.user in self.user.groups.filter(name='модератор').exists()
-    #     return self.form_class
-
-@permission_required('main.publish_status')
-def publish_status(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    product.is_published = False
-    product.save()
-    messages.info(request, 'Публикация отменена')
-    return redirect('main:home')
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('main:product_list')
