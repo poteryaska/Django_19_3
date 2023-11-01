@@ -13,6 +13,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from main.forms import ProductForm, VersionForm
 from main.models import Product, Category, Blog, Version
+from main.services import get_categories_list
 
 
 class HomeView(generic.TemplateView):
@@ -23,9 +24,14 @@ class HomeView(generic.TemplateView):
 
 class CategoryListView(LoginRequiredMixin, generic.ListView):
     model = Category
+    # categories_cache = get_categories_list
     extra_context = {
         'title': 'Категории продуктов'
     }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = get_categories_list()
+        return context
 
 class ProductListView(LoginRequiredMixin, generic.ListView):
     model = Product
@@ -37,6 +43,7 @@ class ProductListView(LoginRequiredMixin, generic.ListView):
 class ItemDetailView(LoginRequiredMixin, generic.DetailView):
     model = Product
     permission_required = 'main.view_product'
+
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         if self.object.owner != self.request.user:
