@@ -24,7 +24,6 @@ class HomeView(generic.TemplateView):
 
 class CategoryListView(LoginRequiredMixin, generic.ListView):
     model = Category
-    # categories_cache = get_categories_list
     extra_context = {
         'title': 'Категории продуктов'
     }
